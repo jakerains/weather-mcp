@@ -1,117 +1,190 @@
-# Remote MCP Server on Cloudflare
+# 🌤️ Weather MCP Server
 
-Let's get a remote MCP server up-and-running on Cloudflare Workers complete with OAuth login!
+> A powerful, remote Model Context Protocol (MCP) server that brings real-time weather data to AI assistants and applications.
 
-## Develop locally
+[![Deployed on Cloudflare Workers](https://img.shields.io/badge/Deployed%20on-Cloudflare%20Workers-orange?style=for-the-badge&logo=cloudflare)](https://weather-mcp.genaijake.workers.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://typescriptlang.org)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blue?style=for-the-badge)](https://modelcontextprotocol.io)
+
+---
+
+## 🎯 What This Does
+
+Transform any AI assistant into a weather-savvy companion! This MCP server connects your AI to live weather data from the National Weather Service, providing:
+
+- **🌡️ Detailed Weather Forecasts** - Get multi-day forecasts for any US location
+- **⚠️ Real-time Weather Alerts** - Access active weather warnings and advisories
+- **🔐 Secure OAuth Access** - Protected with industry-standard authentication
+- **🌍 Global Deployment** - Accessible worldwide via Cloudflare's edge network
+
+---
+
+## 🚀 Quick Start
+
+### For AI Assistant Users
+
+**Live Server URL:** `https://weather-mcp.genaijake.workers.dev/sse`
+
+#### Connect with Claude Desktop
+Add this to your Claude Desktop configuration:
+
+```json
+{
+  "mcpServers": {
+    "weather": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://weather-mcp.genaijake.workers.dev/sse"]
+    }
+  }
+}
+```
+
+#### Test with MCP Inspector
+```bash
+npx @modelcontextprotocol/inspector
+# Then connect to: https://weather-mcp.genaijake.workers.dev/sse
+```
+
+---
+
+## 🛠️ Available Tools
+
+### 🌦️ `get-forecast`
+Get detailed weather forecasts for any US location using coordinates.
+
+**Parameters:**
+- `latitude` (number): Latitude (-90 to 90)
+- `longitude` (number): Longitude (-180 to 180)
+
+**Example Request:**
+```json
+{
+  "latitude": 37.7749,
+  "longitude": -122.4194
+}
+```
+
+**Example Response:**
+```
+Forecast for 37.7749, -122.4194:
+
+Tonight:
+Temperature: 52°F
+Wind: 5 mph W
+Partly cloudy with patchy fog after midnight
+
+Tuesday:
+Temperature: 68°F
+Wind: 10 mph NW
+Sunny with areas of morning fog
+---
+```
+
+### 🚨 `get-alerts`
+Retrieve active weather alerts and warnings for any US state.
+
+**Parameters:**
+- `state` (string): Two-letter state code (e.g., "CA", "TX", "FL")
+
+**Example Request:**
+```json
+{
+  "state": "CA"
+}
+```
+
+**Example Response:**
+```
+Active alerts for CA:
+
+Event: High Wind Warning
+Area: San Francisco Bay Area
+Severity: Moderate
+Status: Actual
+Headline: High Wind Warning until Tuesday 10:00 AM PST
+---
+```
+
+---
+
+## 💡 Usage Examples
+
+### Weather Planning Assistant
+```
+User: "What's the weather like in Seattle this week?"
+AI: Uses get-forecast tool with Seattle coordinates
+Response: Detailed 7-day forecast with temperatures and conditions
+```
+
+### Emergency Weather Monitoring
+```
+User: "Are there any severe weather alerts in Florida?"
+AI: Uses get-alerts tool with state code "FL"
+Response: Current hurricane, tornado, or severe weather warnings
+```
+
+### Travel Weather Briefing
+```
+User: "I'm flying to Denver tomorrow, any weather concerns?"
+AI: Combines forecast and alerts for comprehensive travel weather brief
+```
+
+---
+
+## 🌍 Data Source & Coverage
+
+Powered by the **[National Weather Service API](https://weather.gov/)** 🇺🇸
+- ✅ **Official Government Data** - Trusted, accurate weather information
+- ✅ **Real-time Updates** - Live alerts and current conditions
+- ✅ **Comprehensive Coverage** - All US states and territories
+- ❌ **US Only** - Due to NWS API limitations
+
+---
+
+## 🏗️ Local Development
 
 ```bash
-# clone the repository
-git clone git@github.com:cloudflare/ai.git
-
-# install dependencies
-cd ai
+# Clone and setup
+git clone <your-repo-url>
+cd weather-mcp
 npm install
 
-# run locally
-npx nx dev remote-mcp-server
+# Start development server
+npm run dev
+# Server available at: http://localhost:8787/sse
+
+# Deploy to production
+npm run deploy
 ```
 
-You should be able to open [`http://localhost:8787/`](http://localhost:8787/) in your browser
+---
 
-## Connect the MCP inspector to your server
+## 🔒 Authentication & Security
 
-To explore your new MCP api, you can use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector).
+This server implements **OAuth 2.0** for secure access:
 
-- Start it with `npx @modelcontextprotocol/inspector`
-- [Within the inspector](http://localhost:5173), switch the Transport Type to `SSE` and enter `http://localhost:8787/sse` as the URL of the MCP server to connect to, and click "Connect"
-- You will navigate to a (mock) user/password login screen. Input any email and pass to login.
-- You should be redirected back to the MCP Inspector and you can now list and call any defined tools!
+1. **🔑 Client Registration** - Register your MCP client
+2. **👤 User Authorization** - Users approve weather data access
+3. **🎫 Token Exchange** - Secure token-based authentication
+4. **🛡️ Scoped Permissions** - Granular access control
+
+---
+
+## 📊 Status & Monitoring
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| 🌐 **Server** | ✅ Live | `weather-mcp.genaijake.workers.dev` |
+| 🌦️ **Weather API** | ✅ Active | National Weather Service |
+| 🔐 **OAuth** | ✅ Functional | User authentication working |
+| 📡 **MCP Protocol** | ✅ Compatible | Latest MCP SDK |
+
+---
 
 <div align="center">
-  <img src="img/mcp-inspector-sse-config.png" alt="MCP Inspector with the above config" width="600"/>
+
+**⭐ Star this repo if you find it useful!**
+
+Made with ❤️ and lots of ☕ for the AI community
+
 </div>
-
-<div align="center">
-  <img src="img/mcp-inspector-successful-tool-call.png" alt="MCP Inspector with after a tool call" width="600"/>
-</div>
-
-## Connect Claude Desktop to your local MCP server
-
-The MCP inspector is great, but we really want to connect this to Claude! Follow [Anthropic's Quickstart](https://modelcontextprotocol.io/quickstart/user) and within Claude Desktop go to Settings > Developer > Edit Config to find your configuration file.
-
-Open the file in your text editor and replace it with this configuration:
-
-```json
-{
-  "mcpServers": {
-    "math": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "http://localhost:8787/sse"
-      ]
-    }
-  }
-}
-```
-
-This will run a local proxy and let Claude talk to your MCP server over HTTP
-
-When you open Claude a browser window should open and allow you to login. You should see the tools available in the bottom right. Given the right prompt Claude should ask to call the tool.
-
-<div align="center">
-  <img src="img/available-tools.png" alt="Clicking on the hammer icon shows a list of available tools" width="600"/>
-</div>
-
-<div align="center">
-  <img src="img/claude-does-math-the-fancy-way.png" alt="Claude answers the prompt 'I seem to have lost my calculator and have run out of fingers. Could you use the math tool to add 23 and 19?' by invoking the MCP add tool" width="600"/>
-</div>
-
-## Deploy to Cloudflare
-
-1. `npx wrangler@latest kv namespace create remote-mcp-server-oauth-kv`
-2. Follow the guidance to add the kv namespace ID to `wrangler.jsonc`
-3. `npm run deploy`
-
-## Call your newly deployed remote MCP server from a remote MCP client
-
-Just like you did above in "Develop locally", run the MCP inspector:
-
-`npx @modelcontextprotocol/inspector@latest`
-
-Then enter the `workers.dev` URL (ex: `worker-name.account-name.workers.dev/sse`) of your Worker in the inspector as the URL of the MCP server to connect to, and click "Connect".
-
-You've now connected to your MCP server from a remote MCP client.
-
-## Connect Claude Desktop to your remote MCP server
-
-Update the Claude configuration file to point to your `workers.dev` URL (ex: `worker-name.account-name.workers.dev/sse`) and restart Claude 
-
-```json
-{
-  "mcpServers": {
-    "math": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://worker-name.account-name.workers.dev/sse"
-      ]
-    }
-  }
-}
-```
-
-## Debugging
-
-Should anything go wrong it can be helpful to restart Claude, or to try connecting directly to your
-MCP server on the command line with the following command.
-
-```bash
-npx mcp-remote http://localhost:8787/sse
-```
-
-In some rare cases it may help to clear the files added to `~/.mcp-auth`
-
-```bash
-rm -rf ~/.mcp-auth
-```

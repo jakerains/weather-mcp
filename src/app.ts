@@ -21,7 +21,7 @@ const app = new Hono<{
 // Render a basic homepage placeholder to make sure the app is up
 app.get("/", async (c) => {
 	const content = await homeContent(c.req.raw);
-	return c.html(layout(content, "MCP Remote Auth Demo - Home"));
+	return c.html(layout(content, "Weather MCP Server - Home"));
 });
 
 // Render an authorization page
@@ -40,17 +40,17 @@ app.get("/authorize", async (c) => {
 			name: "read_profile",
 			description: "Read your basic profile information",
 		},
-		{ name: "read_data", description: "Access your stored data" },
-		{ name: "write_data", description: "Create and modify your data" },
+		{ name: "read_data", description: "Access weather data" },
+		{ name: "write_data", description: "Store weather preferences" },
 	];
 
 	if (isLoggedIn) {
 		const content = await renderLoggedInAuthorizeScreen(oauthScopes, oauthReqInfo);
-		return c.html(layout(content, "MCP Remote Auth Demo - Authorization"));
+		return c.html(layout(content, "Weather MCP Server - Authorization"));
 	}
 
 	const content = await renderLoggedOutAuthorizeScreen(oauthScopes, oauthReqInfo);
-	return c.html(layout(content, "MCP Remote Auth Demo - Authorization"));
+	return c.html(layout(content, "Weather MCP Server - Authorization"));
 });
 
 // The /authorize page has a form that will POST to /approve
@@ -76,7 +76,7 @@ app.post("/approve", async (c) => {
 			return c.html(
 				layout(
 					await renderAuthorizationRejectedContent("/"),
-					"MCP Remote Auth Demo - Authorization Status",
+					"Weather MCP Server - Authorization Status",
 				),
 			);
 		}
@@ -99,7 +99,7 @@ app.post("/approve", async (c) => {
 	return c.html(
 		layout(
 			await renderAuthorizationApprovedContent(redirectTo),
-			"MCP Remote Auth Demo - Authorization Status",
+			"Weather MCP Server - Authorization Status",
 		),
 	);
 });
